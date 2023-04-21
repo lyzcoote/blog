@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  
+<title>A Basic MySQL Guide | Lyz Coote&#x27;s Blog</title>
+
+
+  <link rel="shortcut icon" type="image/png" href="&#x2F;images&#x2F;favicon.png">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link id="stylesheet" rel="stylesheet" type="text/css" href="/dark.css">
+
+  <script type="text/javascript" src="/js/theme.js"></script>
+
+</head>
+
+<div class="header">
+  <div class="site_title">
+    <p><a href="/"><img src="https:&#x2F;&#x2F;blog.lyzcoote.gay&#x2F;&#x2F;images&#x2F;logo.png" alt="Lyz Coote&#x27;s Blog"
+          width="70" height=auto></a></p>
+    <p><a href="/">&nbsp;Lyz Coote&#x27;s Blog</a></p>
+  </div>
+  <div class="menu">
+    <a href="/post">>archives</a>
+    &nbsp;<a href="/about">>about</a>
+  </div>
+</div>
+
+<body onload="getTheme()">
+  <section class="section">
+    <div class="container">
+      
+<p>
+  <div class="title_postpage">A Basic MySQL Guide</div>
+</p>
+<p>
+  <div class="date_postpage">2023-04-21</div>
+  <div class="taxonomies_postpage">
+  
+      
+      <a href="https://blog.lyzcoote.gay/categories/code/">/code</a>
+      
+  
+  
+      
+      &emsp;<a href="https://blog.lyzcoote.gay/tags/mysql/">#mysql</a>
+      
+  
+  </div>
+</p>
+
+<p>
+  <h2 id="using-the-mysql-client">Using the MySQL Client</h2>
+<p>MySQL lets you connect to a server using a client like the command-line tool, <strong>mysql</strong>. Use the <strong>-u</strong> and <strong>-p</strong> flags to provide your username and password:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">mysql -u </span><span style="color:#fa5c4b;">[</span><span style="color:#fdf4c1;">username</span><span style="color:#fa5c4b;">]</span><span style="color:#fdf4c1;"> -p
+</span><span style="color:#fdf4c1;">mysql -u </span><span style="color:#fa5c4b;">[</span><span style="color:#fdf4c1;">username</span><span style="color:#fa5c4b;">]</span><span style="color:#fdf4c1;"> -p </span><span style="color:#fa5c4b;">[</span><span style="color:#fdf4c1;">database</span><span style="color:#fa5c4b;">]
+</span></code></pre>
+<p>When you're finished, exit the MySQL command-line client as follows:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fabd2f;">exit
+</span></code></pre>
+<h2 id="working-with-user-accounts">Working With User Accounts</h2>
+<p>To create a new user account, open the new terminal to access MySQL as the root and create a new user as follows:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">sudo mysql -u root -p
+</span><span style="color:#fdf4c1;">mysql</span><span style="color:#fe8019;">&gt;</span><span style="color:#fdf4c1;"> CREATE USER </span><span style="color:#b8bb26;">&#39;username&#39;</span><span style="color:#fdf4c1;"> IDENTIFIED BY </span><span style="color:#b8bb26;">&#39;password&#39;</span><span style="color:#fe8019;">;
+</span></code></pre>
+<p>You can also set up a user account with restricted access by specifying a host that they must access the database from:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">CREATE USER </span><span>&#39;</span><span style="color:#8ec07c;">user</span><span>&#39;@</span><span style="color:#b8bb26;">&#39;localhost&#39;</span><span>;  
+</span><span style="color:#fa5c4b;">CREATE USER </span><span>&#39;</span><span style="color:#8ec07c;">username</span><span>&#39;@</span><span style="color:#b8bb26;">&#39;localhost&#39;</span><span> IDENTIFIED BY </span><span style="color:#b8bb26;">&#39;password&#39;</span><span>;
+</span></code></pre>
+<p>To specify a remote connection, you can replace the ‘localhost’ with the machine's IP address as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">CREATE USER </span><span>&#39;</span><span style="color:#8ec07c;">username</span><span>&#39;@</span><span style="color:#b8bb26;">&#39;ip_address&#39;</span><span> IDENTIFIED BY </span><span style="color:#b8bb26;">&#39;password&#39;</span><span>;
+</span></code></pre>
+<p>Lastly, you can delete an account with the following statement:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">DROP USER </span><span style="color:#b8bb26;">&#39;user&#39;</span><span>@</span><span style="color:#b8bb26;">&#39;ip_address&#39;</span><span> IDENTIFIED BY </span><span style="color:#b8bb26;">&#39;password&#39;</span><span>;
+</span></code></pre>
+<h2 id="user-account-privileges">User Account Privileges</h2>
+<p>Before moving on, you'll need to set the appropriate permissions on the new user account. This avoids the risk of unnecessary user access within the database.</p>
+<p>You can work with user privileges in MySQL using statements such as </p>
+<ul>
+<li>GRANT</li>
+<li>REVOKE</li>
+<li>ALTER</li>
+</ul>
+<p>Depending on the actions you want a user to be able to carry out, you can assign all or some permissions. These permissions are:</p>
+<ul>
+<li>ALL PRIVILEGES</li>
+<li>SELECT</li>
+<li>UPDATE</li>
+<li>INSERT</li>
+<li>DELETE</li>
+<li>CREATE</li>
+<li>DROP </li>
+<li>GRANT OPTION.</li>
+</ul>
+<p>You can assign the administrative privilege of inserting data to all tables belonging to any database:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">GRANT INSERT</span><span> ON </span><span style="color:#fdf4c1;">*</span><span>.</span><span style="color:#fdf4c1;">*</span><span> TO </span><span style="color:#b8bb26;">&#39;username&#39;</span><span>@</span><span style="color:#b8bb26;">&#39;ip_address&#39;</span><span>;
+</span></code></pre>
+<p>However, you can also limit user access by specifying the database before the period. You can allow a user to select, insert, and delete data to and from all the tables inside a database as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">GRANT SELECT</span><span>, </span><span style="color:#fa5c4b;">INSERT</span><span>, </span><span style="color:#fa5c4b;">DELETE</span><span> ON database.</span><span style="color:#fdf4c1;">*</span><span> TO </span><span style="color:#b8bb26;">&#39;user&#39;</span><span>@</span><span style="color:#b8bb26;">&#39;ip_address&#39;</span><span> IDENTIFIED BY </span><span style="color:#b8bb26;">&#39;password&#39;</span><span>;
+</span></code></pre>
+<p>Similarly, you can restrict user access to a specific table by specifying a table name after the period.</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">GRANT SELECT</span><span>, </span><span style="color:#fa5c4b;">INSERT</span><span>, </span><span style="color:#fa5c4b;">DELETE</span><span> ON </span><span style="color:#b8bb26;">database</span><span>.</span><span style="color:#b8bb26;">table_name</span><span> TO </span><span style="color:#b8bb26;">&#39;user&#39;</span><span>@</span><span style="color:#b8bb26;">&#39;ip_address&#39;</span><span> IDENTIFIED BY </span><span style="color:#b8bb26;">&#39;password&#39;</span><span>;
+</span></code></pre>
+<p>You can grant all permissions to every table inside a specific database as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">GRANT</span><span> ALL PRIVILEGES ON database.</span><span style="color:#fdf4c1;">*</span><span> TO </span><span style="color:#b8bb26;">&#39;user&#39;</span><span>@</span><span style="color:#b8bb26;">&#39;ip_address&#39;</span><span> IDENTIFIED BY </span><span style="color:#b8bb26;">&#39;password&#39;</span><span>;
+</span></code></pre>
+<p>To revoke permissions of a user from a single database:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">REVOKE</span><span> ALL PRIVILEGES ON database.</span><span style="color:#fdf4c1;">* </span><span style="color:#fa5c4b;">FROM </span><span style="color:#b8bb26;">&#39;user&#39;</span><span>@</span><span style="color:#b8bb26;">&#39;ip_address&#39;</span><span>; 
+</span></code></pre>
+<p>You can revoke all user privileges from every database as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">REVOKE</span><span> ALL PRIVILEGES, </span><span style="color:#fa5c4b;">GRANT</span><span> OPTION </span><span style="color:#fa5c4b;">FROM </span><span style="color:#b8bb26;">&#39;user&#39;</span><span>@</span><span style="color:#b8bb26;">&#39;ip_address&#39;</span><span>; 
+</span></code></pre>
+<p>Finally, you can set passwords like this:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">SET</span><span> PASSWORD FOR </span><span style="color:#b8bb26;">&#39;user&#39;</span><span>@</span><span style="color:#b8bb26;">&#39;ip_address&#39; </span><span style="color:#fe8019;">=</span><span> PASSWORD(</span><span style="color:#b8bb26;">&#39;new_password&#39;</span><span>);
+</span></code></pre>
+<p>Note the use of the PASSWORD function which <em>hashes the plaintext password</em>.</p>
+<h2 id="working-with-databases">Working With Databases</h2>
+<p>You can create a new database with a name that does not already exist:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">CREATE DATABASE </span><span style="color:#8ec07c;">database_name</span><span>;
+</span></code></pre>
+<p>You can switch the current database to another that you want to work with:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span>USE database_name;
+</span></code></pre>
+<p>Lastly, you can delete an entire database along with its tables as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">DROP DATABASE</span><span> database_name;
+</span></code></pre>
+<h2 id="working-with-tables">Working With Tables</h2>
+<p>A table is the main structural element of a <a href="https://dev.mysql.com/doc/refman/8.0/en/system-schema.html">MySQL database</a>, grouping a set of related records as rows. Each row has columns with different data types that can be:</p>
+<ul>
+<li>CHAR</li>
+<li>VARCHAR</li>
+<li>TEXT</li>
+</ul>
+<p>among many others.</p>
+<p>The general syntax to create a table is as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">CREATE TABLE </span><span style="color:#8ec07c;">table_name</span><span> (column_1 data_type1, column_2 data_type2);
+</span></code></pre>
+<p>You can also create a new table from an existing table by selecting specific columns as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">CREATE TABLE </span><span>new_table_name AS SELECT </span><span style="color:#8ec07c;">column_1</span><span>, column_2 </span><span style="color:#fa5c4b;">FROM</span><span> existing_table_name;
+</span></code></pre>
+<p>You can add data to a table using the following command:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">INSERT INTO</span><span> table_name (column_1, column_2) </span><span style="color:#fa5c4b;">VALUES</span><span> (value_1, value_2);
+</span></code></pre>
+<p>To delete a table, use the DROP TABLE statement as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">DROP TABLE</span><span> table_name;
+</span></code></pre>
+<p>Or you keep the table but delete all its data using:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">TRUNCATE</span><span> TABLE table_name; 
+</span></code></pre>
+<h2 id="accessing-databases">Accessing Databases</h2>
+<p>Use the following statement to show all the available databases inside the MySQL DMS:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span>SHOW DATABASES;
+</span></code></pre>
+<p>Similarly, you can list all tables in the current database:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span>SHOW TABLES;
+</span></code></pre>
+<p>To view all columns inside a table:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span>DESCRIBE table_name;
+</span></code></pre>
+<p>To display column information inside a table:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span>DESCRIBE table_name column_name;
+</span></code></pre>
+<h2 id="querying-databases">Querying Databases</h2>
+<p>MySQL allows you to use a <strong>SELECT</strong> statement to query data from the database. You can use various MySQL clauses to extend its base functionality.</p>
+<p>The following statement returns a result set consisting of two columns from every row in a table:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">SELECT</span><span> column1, column2 </span><span style="color:#fa5c4b;">FROM</span><span> table_name; 
+</span></code></pre>
+<p>Or display all columns as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">SELECT </span><span style="color:#fdf4c1;">* </span><span style="color:#fa5c4b;">FROM</span><span> table_name; 
+</span></code></pre>
+<p>You can also query databases/tables and retrieve information using conditions as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">SELECT</span><span> column1, column2 </span><span style="color:#fa5c4b;">FROM</span><span> table_name </span><span style="color:#fa5c4b;">WHERE</span><span> condition; 
+</span></code></pre>
+<p>The SELECT statement also allows you to group the result set by one or more columns using the GROUP BY clause. You can then use aggregate functions to calculate summary data:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">SELECT </span><span style="color:#fabd2f;">COUNT</span><span>(CustomerID), Country </span><span style="color:#fa5c4b;">FROM</span><span> Customers </span><span style="color:#fa5c4b;">GROUP BY</span><span> Country;
+</span></code></pre>
+<h2 id="updating-tables">Updating Tables</h2>
+<p>You can modify data inside the table by using the UPDATE or ALTER statements. The UPDATE statement allows you to update existing single or multiple records/rows.</p>
+<p>The following MySQL command changes the <strong>UserName</strong> and <strong>City</strong> of a single record where the <strong>UserID</strong> is <strong>2</strong>:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">UPDATE</span><span> Users </span><span style="color:#fa5c4b;">SET</span><span> UserName </span><span style="color:#fe8019;">= </span><span style="color:#b8bb26;">&#39;Alfred James&#39;</span><span>, City</span><span style="color:#fe8019;">= </span><span style="color:#b8bb26;">&#39;Munich&#39; </span><span style="color:#fa5c4b;">WHERE</span><span> UserID </span><span style="color:#fe8019;">= </span><span style="color:#d3869b;">2</span><span>;
+</span></code></pre>
+<p>While this example updates all <strong>UserName</strong>s for all records where the <strong>City</strong> is <strong>Munich</strong>:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">UPDATE</span><span> Users </span><span style="color:#fa5c4b;">SET</span><span> UserName</span><span style="color:#fe8019;">=</span><span style="color:#b8bb26;">&#39;Juan&#39; </span><span style="color:#fa5c4b;">WHERE</span><span> City</span><span style="color:#fe8019;">=</span><span style="color:#b8bb26;">&#39;Munich&#39;</span><span>; 
+</span></code></pre>
+<p>You can add a column to a table like this:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">ALTER TABLE </span><span>table_name ADD COLUMN column_name;
+</span></code></pre>
+<p>To remove a column from the table, use the ALTER TABLE statement as follows:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">ALTER TABLE </span><span>table_name DROP COLUMN column_name; 
+</span></code></pre>
+<h2 id="example-database">Example Database</h2>
+<p>Now let's use what we learned before.</p>
+<p>Let's say that we want to create a database called <strong>MangoLeFroot</strong> and a table called <strong>Users</strong> with this proprieties:</p>
+<table><thead><tr><th>sqlID</th><th>createdAt</th><th>username</th><th>first_name</th><th>last_name</th><th>age</th><th>isAdmin</th></tr></thead><tbody>
+<tr><td>auto_increment int(15) not null primary key</td><td>current_timestap</td><td>varchar(50) not null</td><td>varchar(50) not null</td><td>varchar(50)</td><td>int(3) not null</td><td>int(1) not null</td></tr>
+</tbody></table>
+<p>With 2 users:</p>
+<ul>
+<li>Lyz Coote, normal user, 21 years old</li>
+<li>Mango LeFroot, Admin User, 28 years old</li>
+</ul>
+<p>Let's start! Let's create the DB and the table!</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">CREATE DATABASE </span><span style="color:#8ec07c;">MangoLeFroot</span><span>;
+</span><span>USE MangoLeFroot;
+</span><span style="color:#fa5c4b;">CREATE TABLE </span><span style="color:#8ec07c;">users  
+</span><span>(  
+</span><span>	sqlID </span><span style="color:#fa5c4b;">int</span><span>(</span><span style="color:#d3869b;">15</span><span>) auto_increment comment </span><span style="color:#b8bb26;">&#39;Primary Key&#39;</span><span>,  
+</span><span>	createAt </span><span style="color:#fa5c4b;">datetime default </span><span style="color:#fabd2f;">current_timestamp </span><span style="color:#fe8019;">not </span><span style="color:#d3869b;">null</span><span> comment </span><span style="color:#b8bb26;">&#39;Creation timestap&#39;</span><span>,  
+</span><span>	username </span><span style="color:#fa5c4b;">varchar</span><span>(</span><span style="color:#d3869b;">50</span><span>) </span><span style="color:#fe8019;">not </span><span style="color:#d3869b;">null</span><span>,  
+</span><span>	first_name </span><span style="color:#fa5c4b;">varchar</span><span>(</span><span style="color:#d3869b;">50</span><span>) </span><span style="color:#fe8019;">not </span><span style="color:#d3869b;">null</span><span>,  
+</span><span>	last_name </span><span style="color:#fa5c4b;">varchar</span><span>(</span><span style="color:#d3869b;">50</span><span>) </span><span style="color:#d3869b;">null</span><span>,  
+</span><span>	age </span><span style="color:#fa5c4b;">int</span><span>(</span><span style="color:#d3869b;">3</span><span>) </span><span style="color:#fe8019;">not </span><span style="color:#d3869b;">null</span><span>,  
+</span><span>	isAdmin </span><span style="color:#fa5c4b;">int</span><span>(</span><span style="color:#d3869b;">1</span><span>) </span><span style="color:#fa5c4b;">default </span><span style="color:#d3869b;">0 </span><span style="color:#fe8019;">not </span><span style="color:#d3869b;">null</span><span>,  
+</span><span>	</span><span style="color:#fa5c4b;">constraint</span><span> users_pk  
+</span><span>	</span><span style="color:#fa5c4b;">primary key</span><span> (sqlID)  
+</span><span>)engine </span><span style="color:#fe8019;">=</span><span> InnoDB;
+</span></code></pre>
+<p>Let's verify that our table is made up correctly with:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span>DESCRIBE users;
+</span></code></pre>
+<p>Results:</p>
+<table><thead><tr><th style="text-align: left">Field</th><th style="text-align: left">Type</th><th style="text-align: left">Null</th><th style="text-align: left">Key</th><th style="text-align: left">Default</th><th style="text-align: left">Extra</th></tr></thead><tbody>
+<tr><td style="text-align: left">sqlID</td><td style="text-align: left">int</td><td style="text-align: left">NO</td><td style="text-align: left">PRI</td><td style="text-align: left">null</td><td style="text-align: left">auto_increment</td></tr>
+<tr><td style="text-align: left">createAt</td><td style="text-align: left">datetime</td><td style="text-align: left">NO</td><td style="text-align: left"></td><td style="text-align: left">CURRENT_TIMESTAMP</td><td style="text-align: left">DEFAULT_GENERATED</td></tr>
+<tr><td style="text-align: left">username</td><td style="text-align: left">varchar(100)</td><td style="text-align: left">NO</td><td style="text-align: left"></td><td style="text-align: left">null</td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: left">first_name</td><td style="text-align: left">varchar(50)</td><td style="text-align: left">NO</td><td style="text-align: left"></td><td style="text-align: left">null</td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: left">last_name</td><td style="text-align: left">varchar(50)</td><td style="text-align: left">YES</td><td style="text-align: left"></td><td style="text-align: left">null</td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: left">age</td><td style="text-align: left">int</td><td style="text-align: left">NO</td><td style="text-align: left"></td><td style="text-align: left">null</td><td style="text-align: left"></td></tr>
+<tr><td style="text-align: left">isAdmin</td><td style="text-align: left">int</td><td style="text-align: left">NO</td><td style="text-align: left"></td><td style="text-align: left">0</td><td style="text-align: left"></td></tr>
+</tbody></table>
+<p>Purrfect! Now let's add the users:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">INSERT INTO</span><span> users  
+</span><span>	(username, first_name, last_name, age)  
+</span><span style="color:#fa5c4b;">VALUES  
+</span><span>	(</span><span style="color:#b8bb26;">&#39;lyzcoote&#39;</span><span>, </span><span style="color:#b8bb26;">&#39;Lyz&#39;</span><span>, </span><span style="color:#b8bb26;">&#39;Coote&#39;</span><span>, </span><span style="color:#d3869b;">21</span><span>),  
+</span><span>	(</span><span style="color:#b8bb26;">&#39;froot&#39;</span><span>, </span><span style="color:#b8bb26;">&#39;Mango&#39;</span><span>, </span><span style="color:#b8bb26;">&#39;Le Froot&#39;</span><span>, </span><span style="color:#d3869b;">28</span><span>)  
+</span><span>;
+</span></code></pre>
+<p>Let's make the user <strong>froot</strong> an Admin account with:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">UPDATE</span><span> users </span><span style="color:#fa5c4b;">set</span><span> isAdmin </span><span style="color:#fe8019;">= </span><span style="color:#d3869b;">1 </span><span style="color:#fa5c4b;">where </span><span style="color:#b8bb26;">users</span><span>.</span><span style="color:#b8bb26;">username </span><span style="color:#fe8019;">= </span><span style="color:#b8bb26;">&#39;froot&#39;
+</span></code></pre>
+<p>Let's see if everything is correct with:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">SELECT </span><span style="color:#fdf4c1;">* </span><span style="color:#fa5c4b;">from</span><span> users;
+</span></code></pre>
+<p>Results:</p>
+<table><thead><tr><th style="text-align: left">sqlID</th><th style="text-align: left">createAt</th><th style="text-align: left">username</th><th style="text-align: left">first_name</th><th style="text-align: left">last_name</th><th style="text-align: left">age</th><th style="text-align: left">isAdmin</th></tr></thead><tbody>
+<tr><td style="text-align: left">1</td><td style="text-align: left">2023-04-21 07:53:23</td><td style="text-align: left">lyzcoote</td><td style="text-align: left">Lyz</td><td style="text-align: left">Coote</td><td style="text-align: left">21</td><td style="text-align: left">0</td></tr>
+<tr><td style="text-align: left">2</td><td style="text-align: left">2023-04-21 07:53:23</td><td style="text-align: left">froot</td><td style="text-align: left">Mango</td><td style="text-align: left">Le Froot</td><td style="text-align: left">28</td><td style="text-align: left">1</td></tr>
+</tbody></table>
+<p>And here we are!</p>
+
+</p>
+
+
+
+
+    </div>
+  </section>
+</body>
+
+<div class="footer">
+  <a href="/">Lyz Coote&#x27;s Blog</a>&emsp;&copy; Lyz Coote<br>
+  powered by <a href="https://www.getzola.org/">Zola</a>, theme <a
+    href="https://github.com/kyoheiu/emily_zola_theme">emily</a>.
+</div>
+
+</html>

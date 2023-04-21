@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  
+<title>Build a REST API with Node.js, Express, and MySQL | Lyz Coote&#x27;s Blog</title>
+
+
+  <link rel="shortcut icon" type="image/png" href="&#x2F;images&#x2F;favicon.png">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link id="stylesheet" rel="stylesheet" type="text/css" href="/dark.css">
+
+  <script type="text/javascript" src="/js/theme.js"></script>
+
+</head>
+
+<div class="header">
+  <div class="site_title">
+    <p><a href="/"><img src="https:&#x2F;&#x2F;blog.lyzcoote.gay&#x2F;&#x2F;images&#x2F;logo.png" alt="Lyz Coote&#x27;s Blog"
+          width="70" height=auto></a></p>
+    <p><a href="/">&nbsp;Lyz Coote&#x27;s Blog</a></p>
+  </div>
+  <div class="menu">
+    <a href="/post">>archives</a>
+    &nbsp;<a href="/about">>about</a>
+  </div>
+</div>
+
+<body onload="getTheme()">
+  <section class="section">
+    <div class="container">
+      
+<p>
+  <div class="title_postpage">Build a REST API with Node.js, Express, and MySQL</div>
+</p>
+<p>
+  <div class="date_postpage">2023-04-20</div>
+  <div class="taxonomies_postpage">
+  
+      
+      <a href="https://blog.lyzcoote.gay/categories/code/">/code</a>
+      
+  
+  
+      
+      &emsp;<a href="https://blog.lyzcoote.gay/tags/nodejs/">#nodejs</a>
+      
+      &emsp;<a href="https://blog.lyzcoote.gay/tags/rest-api/">#rest-api</a>
+      
+      &emsp;<a href="https://blog.lyzcoote.gay/tags/express/">#express</a>
+      
+      &emsp;<a href="https://blog.lyzcoote.gay/tags/mysql/">#mysql</a>
+      
+  
+  </div>
+</p>
+
+<p>
+  <h2 id="prerequisites">Prerequisites</h2>
+<p>To follow this tutorial, you will need:</p>
+<ul>
+<li>A local development environment for Node.js</li>
+<li>MySQL installed on your local machine or a remote server</li>
+</ul>
+<h2 id="step-1-setting-up-your-project">Step 1 — Setting Up Your Project</h2>
+<p>First, create a new directory for your project and navigate into it:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">mkdir node-express-mysql
+</span><span style="color:#fabd2f;">cd</span><span style="color:#fdf4c1;"> node-express-mysql
+</span></code></pre>
+<p>Next, initialize your project with npm:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">npm init -y
+</span></code></pre>
+<p>This will create a <code>package.json</code> file in your project directory.</p>
+<h2 id="step-2-installing-dependencies">Step 2 — Installing Dependencies</h2>
+<p>In this section, you will install the required dependencies for your project.</p>
+<p>First, install the express module:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">npm install express --save
+</span></code></pre>
+<p>Next, install the <code>mysql</code> module:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">npm install mysql --save
+</span></code></pre>
+<h2 id="step-3-creating-your-database">Step 3 — Creating Your Database</h2>
+<p>In this section, you will create a new database in MySQL.</p>
+<p>First, log in to MySQL as the root user:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">mysql -u root -p
+</span></code></pre>
+<p>Enter your MySQL root password when prompted.</p>
+<p>Next, create a new database called <code>testdb</code>:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#fa5c4b;">CREATE DATABASE </span><span style="color:#8ec07c;">testdb</span><span>;
+</span></code></pre>
+<p>You should see output similar to the following:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span>Query OK, </span><span style="color:#d3869b;">1</span><span> row affected (</span><span style="color:#d3869b;">0</span><span>.</span><span style="color:#d3869b;">01</span><span> sec)
+</span></code></pre>
+<p>Exit the MySQL shell by typing:</p>
+<pre data-lang="sql" style="background-color:#282828;color:#fdf4c1aa;" class="language-sql "><code class="language-sql" data-lang="sql"><span>exit;
+</span></code></pre>
+<h2 id="step-4-creating-your-api">Step 4 — Creating Your API</h2>
+<p>In this section, you will create an Express application that serves as your RESTful API.</p>
+<p>First, create a new file called <code>server.js</code> and add the following code:</p>
+<pre data-lang="javascript" style="background-color:#282828;color:#fdf4c1aa;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">express </span><span style="color:#fe8019;">= </span><span style="color:#fabd2f;">require</span><span>(</span><span style="color:#b8bb26;">&#39;express&#39;</span><span>);
+</span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">mysql </span><span style="color:#fe8019;">= </span><span style="color:#fabd2f;">require</span><span>(</span><span style="color:#b8bb26;">&#39;mysql&#39;</span><span>);
+</span><span>
+</span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">app </span><span style="color:#fe8019;">= </span><span style="color:#8ec07c;">express</span><span>();
+</span><span>
+</span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">connection </span><span style="color:#fe8019;">= </span><span style="color:#fdf4c1;">mysql.</span><span style="color:#8ec07c;">createConnection</span><span>({
+</span><span>  host: </span><span style="color:#b8bb26;">&#39;localhost&#39;</span><span>,
+</span><span>  user: </span><span style="color:#b8bb26;">&#39;root&#39;</span><span>,
+</span><span>  password: </span><span style="color:#b8bb26;">&#39;password&#39;</span><span>,
+</span><span>  database: </span><span style="color:#b8bb26;">&#39;testdb&#39;</span><span>,
+</span><span>});
+</span><span>
+</span><span style="color:#fdf4c1;">connection.</span><span style="color:#8ec07c;">connect</span><span>((</span><span style="color:#fdf4c1;">err</span><span>) </span><span style="color:#fa5c4b;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#fa5c4b;">if </span><span>(</span><span style="color:#fdf4c1;">err</span><span>) {
+</span><span>    </span><span style="color:#8ec07c;">console</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">error</span><span>(</span><span style="color:#b8bb26;">&#39;Error connecting to database:&#39;</span><span>, </span><span style="color:#fdf4c1;">err</span><span>);
+</span><span>    </span><span style="color:#fa5c4b;">return</span><span>;
+</span><span>  }
+</span><span>  </span><span style="color:#8ec07c;">console</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">log</span><span>(</span><span style="color:#b8bb26;">&#39;Connected to database&#39;</span><span>);
+</span><span>});
+</span><span>
+</span><span style="color:#fdf4c1;">app.</span><span style="color:#fabd2f;">get</span><span>(</span><span style="color:#b8bb26;">&#39;/users&#39;</span><span>, (</span><span style="color:#fdf4c1;">req</span><span>, </span><span style="color:#fdf4c1;">res</span><span>) </span><span style="color:#fa5c4b;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#fdf4c1;">connection.</span><span style="color:#8ec07c;">query</span><span>(</span><span style="color:#b8bb26;">&#39;SELECT * FROM users&#39;</span><span>, (</span><span style="color:#fdf4c1;">err</span><span>, </span><span style="color:#fdf4c1;">rows</span><span>) </span><span style="color:#fa5c4b;">=&gt; </span><span>{
+</span><span>    </span><span style="color:#fa5c4b;">if </span><span>(</span><span style="color:#fdf4c1;">err</span><span>) {
+</span><span>      </span><span style="color:#8ec07c;">console</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">error</span><span>(</span><span style="color:#b8bb26;">&#39;Error querying database:&#39;</span><span>, </span><span style="color:#fdf4c1;">err</span><span>);
+</span><span>      </span><span style="color:#fdf4c1;">res.</span><span style="color:#8ec07c;">status</span><span>(</span><span style="color:#d3869b;">500</span><span>)</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">send</span><span>(</span><span style="color:#b8bb26;">&#39;Error querying database&#39;</span><span>);
+</span><span>      </span><span style="color:#fa5c4b;">return</span><span>;
+</span><span>    }
+</span><span>    </span><span style="color:#fdf4c1;">res.</span><span style="color:#8ec07c;">json</span><span>(</span><span style="color:#fdf4c1;">rows</span><span>);
+</span><span>  });
+</span><span>});
+</span><span>
+</span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">port </span><span style="color:#fe8019;">= </span><span style="color:#fabd2f;">process</span><span>.</span><span style="color:#fabd2f;">env</span><span>.</span><span style="color:#fdf4c1;">PORT </span><span style="color:#fe8019;">|| </span><span style="color:#d3869b;">3000</span><span>;
+</span><span>
+</span><span style="color:#fdf4c1;">app.</span><span style="color:#8ec07c;">listen</span><span>(</span><span style="color:#fdf4c1;">port</span><span>, () </span><span style="color:#fa5c4b;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#8ec07c;">console</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">log</span><span>(</span><span style="color:#b8bb26;">`Server running on port ${</span><span style="color:#fdf4c1;">port</span><span style="color:#b8bb26;">}`</span><span>);
+</span><span>});
+</span></code></pre>
+<p>This code sets up an Express application with a single route that retrieves data from a MySQL database and returns it as JSON.</p>
+<p>Start the server by running:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">node server.js
+</span></code></pre>
+<p>You should now be able to access the API at http://localhost:3000/users.</p>
+
+</p>
+
+
+
+
+    </div>
+  </section>
+</body>
+
+<div class="footer">
+  <a href="/">Lyz Coote&#x27;s Blog</a>&emsp;&copy; Lyz Coote<br>
+  powered by <a href="https://www.getzola.org/">Zola</a>, theme <a
+    href="https://github.com/kyoheiu/emily_zola_theme">emily</a>.
+</div>
+
+</html>

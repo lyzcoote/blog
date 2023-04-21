@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  
+<title>Redis Caching with NodeJS | Lyz Coote&#x27;s Blog</title>
+
+
+  <link rel="shortcut icon" type="image/png" href="&#x2F;images&#x2F;favicon.png">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <link id="stylesheet" rel="stylesheet" type="text/css" href="/dark.css">
+
+  <script type="text/javascript" src="/js/theme.js"></script>
+
+</head>
+
+<div class="header">
+  <div class="site_title">
+    <p><a href="/"><img src="https:&#x2F;&#x2F;blog.lyzcoote.gay&#x2F;&#x2F;images&#x2F;logo.png" alt="Lyz Coote&#x27;s Blog"
+          width="70" height=auto></a></p>
+    <p><a href="/">&nbsp;Lyz Coote&#x27;s Blog</a></p>
+  </div>
+  <div class="menu">
+    <a href="/post">>archives</a>
+    &nbsp;<a href="/about">>about</a>
+  </div>
+</div>
+
+<body onload="getTheme()">
+  <section class="section">
+    <div class="container">
+      
+<p>
+  <div class="title_postpage">Redis Caching with NodeJS</div>
+</p>
+<p>
+  <div class="date_postpage">2023-04-20</div>
+  <div class="taxonomies_postpage">
+  
+      
+      <a href="https://blog.lyzcoote.gay/categories/code/">/code</a>
+      
+  
+  
+      
+      &emsp;<a href="https://blog.lyzcoote.gay/tags/nodejs/">#nodejs</a>
+      
+      &emsp;<a href="https://blog.lyzcoote.gay/tags/redis/">#redis</a>
+      
+  
+  </div>
+</p>
+
+<p>
+  <p>Caching is a technique that can help speed up web applications by storing frequently accessed data in memory. </p>
+<blockquote>
+<p>Redis is an in-memory data store that can be used as a cache to help speed up Node.js applications.</p>
+</blockquote>
+<p>Today we will build an Express application that retrieves data from a RESTful API using the axios module. </p>
+<p>Next, you will modify the app to store the data fetched from the API in Redis using the <code>node-redis</code> module.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>To follow this tutorial, you will need:</p>
+<ul>
+<li>A local development environment for Node.js</li>
+<li>An instance of Redis running on your local machine or a remote server</li>
+</ul>
+<h2 id="step-1-setting-up-your-project">Step 1 — Setting Up Your Project</h2>
+<p>First, create a new directory for your project and navigate into it:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">mkdir node-redis-caching
+</span><span style="color:#fabd2f;">cd</span><span style="color:#fdf4c1;"> node-redis-caching
+</span></code></pre>
+<p>Next, initialize your project with <code>npm</code>:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">npm init -y
+</span></code></pre>
+<p>This will create a <code>package.json</code> file in your project directory.</p>
+<h2 id="step-2-retrieving-data-from-a-restful-api">Step 2 — Retrieving Data from a RESTful API</h2>
+<p>In this section, you will build an Express application that retrieves data from a RESTful API using the axios module.</p>
+<p>First, install the required dependencies:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">npm install express axios --save
+</span></code></pre>
+<p>Next, create a new file called <code>server.js</code> and add the following code:</p>
+<pre data-lang="javascript" style="background-color:#282828;color:#fdf4c1aa;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">express </span><span style="color:#fe8019;">= </span><span style="color:#fabd2f;">require</span><span>(</span><span style="color:#b8bb26;">&#39;express&#39;</span><span>);
+</span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">axios </span><span style="color:#fe8019;">= </span><span style="color:#fabd2f;">require</span><span>(</span><span style="color:#b8bb26;">&#39;axios&#39;</span><span>);
+</span><span>
+</span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">app </span><span style="color:#fe8019;">= </span><span style="color:#8ec07c;">express</span><span>();
+</span><span>
+</span><span style="color:#fdf4c1;">app.</span><span style="color:#fabd2f;">get</span><span>(</span><span style="color:#b8bb26;">&#39;/&#39;</span><span>, </span><span style="color:#fa5c4b;">async </span><span>(</span><span style="color:#fdf4c1;">req</span><span>, </span><span style="color:#fdf4c1;">res</span><span>) </span><span style="color:#fa5c4b;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#fa5c4b;">try </span><span>{
+</span><span>    </span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">response </span><span style="color:#fe8019;">= </span><span style="color:#fa5c4b;">await </span><span style="color:#fdf4c1;">axios.</span><span style="color:#fabd2f;">get</span><span>(</span><span style="color:#b8bb26;">&#39;https://jsonplaceholder.typicode.com/posts&#39;</span><span>);
+</span><span>    </span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">posts </span><span style="color:#fe8019;">= </span><span style="color:#fdf4c1;">response</span><span>.</span><span style="color:#fabd2f;">data</span><span>;
+</span><span>    </span><span style="color:#fdf4c1;">res.</span><span style="color:#8ec07c;">json</span><span>(</span><span style="color:#fdf4c1;">posts</span><span>);
+</span><span>  } </span><span style="color:#fa5c4b;">catch </span><span>(</span><span style="color:#fdf4c1;">error</span><span>) {
+</span><span>    </span><span style="color:#8ec07c;">console</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">error</span><span>(</span><span style="color:#fdf4c1;">error</span><span>);
+</span><span>    </span><span style="color:#fdf4c1;">res.</span><span style="color:#8ec07c;">status</span><span>(</span><span style="color:#d3869b;">500</span><span>)</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">send</span><span>(</span><span style="color:#b8bb26;">&#39;Error retrieving posts from API&#39;</span><span>);
+</span><span>  }
+</span><span>});
+</span><span>
+</span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">port </span><span style="color:#fe8019;">= </span><span style="color:#fabd2f;">process</span><span>.</span><span style="color:#fabd2f;">env</span><span>.</span><span style="color:#fdf4c1;">PORT </span><span style="color:#fe8019;">|| </span><span style="color:#d3869b;">3000</span><span>;
+</span><span>
+</span><span style="color:#fdf4c1;">app.</span><span style="color:#8ec07c;">listen</span><span>(</span><span style="color:#fdf4c1;">port</span><span>, () </span><span style="color:#fa5c4b;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#8ec07c;">console</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">log</span><span>(</span><span style="color:#b8bb26;">`Server running on port ${</span><span style="color:#fdf4c1;">port</span><span style="color:#b8bb26;">}`</span><span>);
+</span><span>});
+</span></code></pre>
+<p>This code sets up an Express application with a single route that retrieves data from the JSONPlaceholder API and returns it as JSON.</p>
+<p>Start the server by running:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">node server.js
+</span></code></pre>
+<p>You should now be able to access the API at http://localhost:3000/.</p>
+<h2 id="step-3-caching-restful-api-requests-using-redis">Step 3 — Caching RESTful API Requests Using Redis</h2>
+<p>In this section, you’ll cache data from the API so that only the initial visit to your app endpoint will request data from an API server, and all the following requests will fetch data from the Redis cache.</p>
+<p>Open the <code>server.js</code> file:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">nano server.js
+</span></code></pre>
+<p>In your <code>server.js</code> file, import the <code>node-redis</code> module and create a Redis client:</p>
+<pre data-lang="javascript" style="background-color:#282828;color:#fdf4c1aa;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">redis </span><span style="color:#fe8019;">= </span><span style="color:#fabd2f;">require</span><span>(</span><span style="color:#b8bb26;">&#39;redis&#39;</span><span>);
+</span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">client </span><span style="color:#fe8019;">= </span><span style="color:#fdf4c1;">redis.</span><span style="color:#8ec07c;">createClient</span><span>();
+</span></code></pre>
+<p>Next, modify your route handler to check if the requested data is already cached in Redis. If it is, return it directly. If not, retrieve it from the API and store it in Redis for future requests:</p>
+<pre data-lang="javascript" style="background-color:#282828;color:#fdf4c1aa;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#fdf4c1;">app.</span><span style="color:#fabd2f;">get</span><span>(</span><span style="color:#b8bb26;">&#39;/&#39;</span><span>, </span><span style="color:#fa5c4b;">async </span><span>(</span><span style="color:#fdf4c1;">req</span><span>, </span><span style="color:#fdf4c1;">res</span><span>) </span><span style="color:#fa5c4b;">=&gt; </span><span>{
+</span><span>  </span><span style="color:#fa5c4b;">try </span><span>{
+</span><span>    </span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">cachedPosts </span><span style="color:#fe8019;">= </span><span style="color:#fa5c4b;">await </span><span style="color:#fdf4c1;">client.</span><span style="color:#8ec07c;">getAsync</span><span>(</span><span style="color:#b8bb26;">&#39;posts&#39;</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#fa5c4b;">if </span><span>(</span><span style="color:#fdf4c1;">cachedPosts</span><span>) {
+</span><span>      </span><span style="color:#8ec07c;">console</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">log</span><span>(</span><span style="color:#b8bb26;">&#39;Retrieving posts from cache&#39;</span><span>);
+</span><span>      </span><span style="color:#fdf4c1;">res.</span><span style="color:#8ec07c;">json</span><span>(</span><span style="color:#fabd2f;">JSON</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">parse</span><span>(</span><span style="color:#fdf4c1;">cachedPosts</span><span>));
+</span><span>    } </span><span style="color:#fa5c4b;">else </span><span>{
+</span><span>      </span><span style="color:#8ec07c;">console</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">log</span><span>(</span><span style="color:#b8bb26;">&#39;Retrieving posts from API&#39;</span><span>);
+</span><span>      </span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">response </span><span style="color:#fe8019;">= </span><span style="color:#fa5c4b;">await </span><span style="color:#fdf4c1;">axios.</span><span style="color:#fabd2f;">get</span><span>(</span><span style="color:#b8bb26;">&#39;https://jsonplaceholder.typicode.com/posts&#39;</span><span>);
+</span><span>      </span><span style="color:#fa5c4b;">const </span><span style="color:#fdf4c1;">posts </span><span style="color:#fe8019;">= </span><span style="color:#fdf4c1;">response</span><span>.</span><span style="color:#fabd2f;">data</span><span>;
+</span><span>      </span><span style="color:#fdf4c1;">client.</span><span style="color:#fabd2f;">set</span><span>(</span><span style="color:#b8bb26;">&#39;posts&#39;</span><span>, </span><span style="color:#fabd2f;">JSON</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">stringify</span><span>(</span><span style="color:#fdf4c1;">posts</span><span>));
+</span><span>      </span><span style="color:#fdf4c1;">res.</span><span style="color:#8ec07c;">json</span><span>(</span><span style="color:#fdf4c1;">posts</span><span>);
+</span><span>    }
+</span><span>  } </span><span style="color:#fa5c4b;">catch </span><span>(</span><span style="color:#fdf4c1;">error</span><span>) {
+</span><span>    </span><span style="color:#8ec07c;">console</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">error</span><span>(</span><span style="color:#fdf4c1;">error</span><span>);
+</span><span>    </span><span style="color:#fdf4c1;">res.</span><span style="color:#8ec07c;">status</span><span>(</span><span style="color:#d3869b;">500</span><span>)</span><span style="color:#fdf4c1;">.</span><span style="color:#fabd2f;">send</span><span>(</span><span style="color:#b8bb26;">&#39;Error retrieving posts from API&#39;</span><span>);
+</span><span>  }
+</span><span>});
+</span></code></pre>
+<p>This code uses the getAsync method of your Redis client to retrieve cached data. If there is no cached data available for this request, it retrieves it from the API and stores it in Redis using the set method.</p>
+<p>Start your server again by running:</p>
+<pre data-lang="bash" style="background-color:#282828;color:#fdf4c1aa;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#fdf4c1;">node server.js
+</span></code></pre>
+<p>You should now be able to access your cached API at http://localhost:3000/.</p>
+
+</p>
+
+
+
+
+    </div>
+  </section>
+</body>
+
+<div class="footer">
+  <a href="/">Lyz Coote&#x27;s Blog</a>&emsp;&copy; Lyz Coote<br>
+  powered by <a href="https://www.getzola.org/">Zola</a>, theme <a
+    href="https://github.com/kyoheiu/emily_zola_theme">emily</a>.
+</div>
+
+</html>
