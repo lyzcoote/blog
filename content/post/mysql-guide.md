@@ -317,8 +317,7 @@ INSERT INTO users
 	(username, first_name, last_name, age)  
 VALUES  
 	('lyzcoote', 'Lyz', 'Coote', 21),  
-	('froot', 'Mango', 'Le Froot', 28)  
-;
+	('froot', 'Mango', 'Le Froot', 28);
 ```
 
 Let's make the user **froot** an Admin account with:
