@@ -34,7 +34,6 @@ jobs:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
   docker:
-    needs: build
     runs-on: ubuntu-latest
     environment: docker
     steps:
