@@ -34,6 +34,7 @@ jobs:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
   docker:
+    needs: build
     runs-on: ubuntu-latest
     environment: docker
     steps:
@@ -43,13 +44,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-        - name: Checkout the current branch
-          uses: actions/checkout@v3
+      - name: Checkout the current branch
+        uses: actions/checkout@v3
 
-        - name: Build the Docker image
-          run: docker build . --file Dockerfile --tag lyzcoote-bio:$(date +%s)
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag lyzcoote-bio:$(date +%s)
 
-        - name: Publish Docker Image to Repo
-          run: docker push $DOCKER_USERNAME/lyzcoote-bio:$(date +%s)
-          env:
+      - name: Publish Docker Image to Repo
+        run: docker push $DOCKER_USERNAME/lyzcoote-bio:$(date +%s)
+        env:
             DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
