@@ -57,6 +57,4 @@ jobs:
         run: docker build . --file Dockerfile --tag lyzcoote-bio:$(date +%s)
 
       - name: Publish Docker Image to Repo
-        run: docker push $DOCKER_USERNAME/lyzcoote-bio:$(date +%s)
-        env:
-            DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: docker push lyzcoote/lyzcoote-bio:$(date +%s)
