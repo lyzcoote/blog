@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  build:
+  zola:
     runs-on: ubuntu-latest
     environment: deploy
     steps:
