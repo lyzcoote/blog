@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-x64
+    runs-on: self-hosted
     environment: deploy
     steps:
       - name: Checkout the current branch
@@ -36,7 +36,7 @@ jobs:
           
       - name: Send Telegram error msg if Build fails
         if: ${{ failure() }}
-        uses: appleboy/telegram-action@v0.1.1
+        uses: lyzcoote/telegram-action@0.0.1
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -52,7 +52,7 @@ jobs:
       
       - name: Send Telegram success msg if Build finishes
         if: ${{ success() }}
-        uses: appleboy/telegram-action@v0.1.1
+        uses: lyzcoote/telegram-action@0.0.1
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
