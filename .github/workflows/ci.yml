@@ -34,7 +34,7 @@ jobs:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
           
-      - name: Send Telegram error msg if Deploy fails
+      - name: Send Telegram error msg if Build fails
         if: ${{ failure() }}
         uses: appleboy/telegram-action@v0.1.1
         with:
@@ -44,7 +44,21 @@ jobs:
             Action n°${{ github.run_number }} created via a ${{ github.event_name }} in branch ${{ github.ref_name }} has status of:
             FAILED! 🚨
             
-            Failed on step: ${{ github.job }}
+            Failed on job: ${{ github.job }}
+            
+            Repository: ${{ github.repository }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+      
+      - name: Send Telegram success msg if Build finishes
+        if: ${{ success() }}
+        uses: appleboy/telegram-action@v0.1.1
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            Action n°${{ github.run_number }} created via a ${{ github.event_name }} in branch ${{ github.ref_name }} has status of:
+            SUCCESS! ✅
             
             Repository: ${{ github.repository }}
             
