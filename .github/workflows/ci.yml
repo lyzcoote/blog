@@ -41,7 +41,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            ${{ github.event_name }} has status of:
+            Action n ${{ github.run_number }} created via a ${{ github.event_name }} in branch ${{ github.ref_name }} has status of:
             FAILED! 🚨
             
             Repository: ${{ github.repository }}
