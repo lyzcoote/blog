@@ -33,6 +33,21 @@ jobs:
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          
+      - name: Send Telegram error msg if Deploy fails
+        if: ${{ failure() }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.event_name }} has status of:
+            FAILED! 🚨
+            
+            Repository: ${{ github.repository }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+        
   docker:
     runs-on: self-hosted
     environment: docker
