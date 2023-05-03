@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ARM64
     environment: deploy
     steps:
       - name: Checkout the current branch
