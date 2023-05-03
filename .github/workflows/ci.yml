@@ -65,7 +65,7 @@ jobs:
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
         
   docker:
-    runs-on: self-hosted
+    runs-on: ARM64
     environment: docker
     steps:
       - name: Checkout the current branch
