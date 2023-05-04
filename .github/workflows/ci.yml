@@ -36,7 +36,7 @@ jobs:
           
       - name: Send Telegram error msg if Build fails
         if: ${{ failure() }}
-        uses: lyzcoote/telegram-action@0.0.3
+        uses: lyzcoote/telegram-action@0.0.1
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -52,7 +52,7 @@ jobs:
       
       - name: Send Telegram success msg if Build finishes
         if: ${{ success() }}
-        uses: lyzcoote/telegram-action@0.0.3
+        uses: lyzcoote/telegram-action@0.0.1
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
