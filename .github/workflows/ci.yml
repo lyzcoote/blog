@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ARM64
+    runs-on: laptop
     environment: deploy
     steps:
       - name: Checkout the current branch
