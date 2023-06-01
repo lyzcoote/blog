@@ -21,10 +21,10 @@ Why Backend?
 Yeap! I finally decided to make a roadmap!
 
 Legend:
-- 🟥  0-10%
+- 🟥 0-10%
 - 🟧 10-50%
-- 🟨  50-75%
-- 🟩  50-90%
+- 🟨 50-75%
+- 🟩 50-90%
 - ✅ 100%
 
 | Topic                 | Tech Involved            | 🧠 |
