@@ -13,6 +13,7 @@ tags = ["api", "js", "backend", "db"]
 *Especially if it involves new technologies...*
 
 Welp, I decided that I need to study new technologies if I want to become a Backend Developer!
+
 Why Backend?
 ***I suck at designing...***
 
@@ -37,3 +38,4 @@ Legend:
 | Container and VMs     | Docker, K8s, LXC, VMWare | 🟩 |
 | Cloud Services        | Azure, AWS, DigitalOcean | 🟨 |
 | Scripting             | Bash                     | 🟨 |
+| CI/CD                 | GitHub Actions           | 🟨 |
