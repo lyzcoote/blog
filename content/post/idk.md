@@ -1,9 +1,9 @@
 +++
-title = "Let's get serious!"
-date = 2023-06-01
+title = "..."
+date = 2023-07-05
 [taxonomies]
-categories = ["code"]
-tags = ["api", "js", "backend", "db"]
+categories = [""]
+tags = [""]
 +++
 
 # ...
